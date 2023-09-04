@@ -49,6 +49,13 @@ logging:
   level:
     root: debug
 
+springdoc:
+  api-docs:
+    path: /api-transsaction-docs
+  swagger-ui:
+    path: /swagger-ui-transsaction.html
+    operationsSorter: method
+
 #Monitoreo con Actuator-Prometheus y Grafana.
 management:
   endpoints:
