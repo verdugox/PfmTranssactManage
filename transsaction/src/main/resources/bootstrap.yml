@@ -1,0 +1,11 @@
+#spring:
+#  application:
+#    name: register
+#  config:
+#    import:
+#      - configserver:http://localhost:8888/
+
+spring:
+  cloud:
+   config:
+     uri: http://localhost:8888/

@@ -1,0 +1,66 @@
+server:
+  port: 0
+spring:
+  application:
+    name: transsaction
+  cloud:
+    config:
+      profile: dev
+  data:
+    mongodb:
+      host: localhost                 # Dirección del servidor MongoDB
+      port: 27017                     # Puerto del servidor MongoDB
+      database: transsaction          # Nombre de la base de datos
+#      authentication-database: admin  # Base de datos de autenticación (opcional)
+#      username: your-username         # Usuario de autenticación (opcional)
+#      password: your-password         # Contraseña de autenticación (opcional)
+  redis:
+    host: localhost
+    port: 6379
+cache:
+    enabled: true
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10 # Tamaño de la ventana deslizante
+        minimumNumberOfCalls: 5 # Número mínimo de llamadas para activar el CircuitBreaker
+        permittedNumberOfCallsInHalfOpenState: 3 # Número permitido de llamadas en estado medio abierto
+        failureRateThreshold: 50 # Umbral de tasa de falla en porcentaje
+        waitDurationInOpenState: 5000 # Duración de espera en estado abierto en milisegundos
+        slowCallRateThreshold: 100 # Umbral de tasa de llamadas lentas en porcentaje
+        slowCallDurationThreshold: 1000 # Umbral de duración de llamada lenta en milisegundos
+        timeLimiter: # Configuración de TimeLimiter
+         timeoutDuration: 2000 # Duración de tiempo límite en milisegundos
+
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 2000 # Duración de tiempo límite en milisegundos
+
+  event-consumer:
+    registry-event-consumer:
+      default:
+        consumers:
+          - name: 'timeLimiter'
+            event-consumer: io.github.resilience4j.timelimiter.TimeLimiterEventConsumer
+
+logging:
+  level:
+    root: debug
+
+#Monitoreo con Actuator-Prometheus y Grafana.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+        show-details: always
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
